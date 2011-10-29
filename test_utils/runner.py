@@ -1,4 +1,5 @@
 import os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings.test')
 
 from django.conf import settings
 from django.core.management.color import no_style
@@ -141,14 +142,3 @@ class RadicalTestSuiteRunner(django_nose.NoseTestSuiteRunner):
 
     def teardown_databases(self, old_config, **kwargs):
         """Leave those poor, reusable databases alone."""
-
-    def setup_test_environment(self, **kwargs):
-        # If we have a settings_test.py let's roll it into our settings.
-        try:
-            import settings_test
-            # Use setattr to update Django's proxies:
-            for k in dir(settings_test):
-                setattr(settings, k, getattr(settings_test, k))
-        except ImportError:
-            pass
-        super(RadicalTestSuiteRunner, self).setup_test_environment(**kwargs)
